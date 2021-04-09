@@ -152,7 +152,7 @@ export class TibberFeed extends EventEmitter {
              * Event: open
              * Called when websocket connection is established.
              */
-            node._webSocket.on('open', () => {
+            node._webSocket.addEventListener('open', () => {
                 if (!node._webSocket) {
                     return;
                 }
@@ -163,7 +163,8 @@ export class TibberFeed extends EventEmitter {
              * Event: message
              * Called when data is received from the feed.
              */
-            node._webSocket.on('message', (message: string) => {
+            node._webSocket.addEventListener('message', (event) => {
+                const message = event.data;
                 if (message.startsWith('{')) {
                     const msg = JSON.parse(message);
                     if (msg.type === 'connection_ack') {
@@ -200,7 +201,7 @@ export class TibberFeed extends EventEmitter {
              * Event: close
              * Called when feed is closed.
              */
-            node._webSocket.on('close', () => {
+            node._webSocket.addEventListener('close', () => {
                 node._isConnected = false;
                 node.emit('disconnected', 'Disconnected from Tibber feed');
             });
@@ -209,8 +210,8 @@ export class TibberFeed extends EventEmitter {
              * Event: error
              * Called when an error has occurred.
              */
-            node._webSocket.on('error', (error: any) => {
-                node.error(error);
+            node._webSocket.addEventListener('error', (event) => {
+                node.error(event.error);
             });
         } finally {
             node._isConnecting = false;
